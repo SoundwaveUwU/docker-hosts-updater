@@ -6,8 +6,8 @@ from netaddr import valid_ipv4
 LABEL = 'ru.grachevko.dhu'
 MARKER = '#### DOCKER HOSTS UPDATER ####'
 HOSTS_PATH = '/opt/hosts'
-CONTAINER_HOSTNAME_DISABLED = bool(os.getenv('CONTAINER_HOSTNAME_DISABLED', False))
-CONTAINER_NAME_DISABLED = bool(os.getenv('CONTAINER_NAME_DISABLED', False))
+FALLBACK_CONTAINER_HOSTNAME = bool(os.getenv('FALLBACK_CONTAINER_HOSTNAME', False))
+FALLBACK_CONTAINER_NAME = bool(os.getenv('FALLBACK_CONTAINER_NAME', False))
 
 
 def listen():
@@ -20,8 +20,9 @@ def scan():
     containers = []
     for container in docker.containers.list():
         label = container.attrs.get('Config').get('Labels').get(LABEL)
+
         if not label:
-            continue
+            string = ''
 
         for string in label.split(';'):
             priority = 0
@@ -45,9 +46,9 @@ def scan():
                 ip = next(iter(lb.attrs.get('NetworkSettings').get('Networks').values())).get('IPAddress')
 
             hosts = string_to_array(string)
-            if not CONTAINER_HOSTNAME_DISABLED:
+            if FALLBACK_CONTAINER_HOSTNAME:
                 hosts.append(container.attrs.get('Config').get('Hostname'))
-            if not CONTAINER_NAME_DISABLED:
+            if FALLBACK_CONTAINER_NAME:
                 hosts.append(container.name)
 
             if ip:
