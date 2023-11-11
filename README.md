@@ -18,34 +18,31 @@ $ docker run -d --restart=always \
     --name docker-hosts-updater \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v /etc/hosts:/opt/hosts \
-    grachevko/docker-hosts-updater
+    ghcr.io/soundwaveuwu/docker-hosts-updater
 ```
-    
-Start containers with label `ru.grachevko.dhu` option
-
-    % docker run -d --label ru.grachevko.dhu=nginx.local nginx
       
 Try to ping from host
-
-    % ping nginx.local
+```bash
+$ ping <container_name>
+```
 
 Default hosts
 -----
-By default adding records with container name and container hostname. 
-To disable it you can use environments `CONTAINER_HOSTNAME_DISABLED` and `CONTAINER_NAME_DISABLED`:    
+By default this program adds records with container's name and hostname. 
+To disable it you can use environments `FALLBACK_CONTAINER_HOSTNAME` and `FALLBACK_CONTAINER_NAME` and set them to `False`:    
 ```bash
 $ docker run -d --restart=always \
     --name docker-hosts-updater \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v /etc/hosts:/opt/hosts \
-    -e CONTAINER_HOSTNAME_DISABLED=false \
-    -e CONTAINER_NAME_DISABLED=false \
-    grachevko/docker-hosts-updater
+    -e FALLBACK_CONTAINER_HOSTNAME=False \
+    -e FALLBACK_CONTAINER_NAME=False \
+    ghcr.io/soundwaveuwu/docker-hosts-updater
 ```
 
 Multiple Hosts
 -----
-You can add multiple hosts, just separate them by semicolon:
+You can add multiple hosts, separate them by semicolon:
 
 ```bash
 $ docker run --label ru.grachevko.dhu="nginx.local;nginx.ru" nginx
@@ -55,7 +52,7 @@ $ ping nginx.ru
 
 Subdomains
 -----
-Add subdomains by using pattern `{www,api}.nginx.local`:
+Add multiple subdomains by using brackets `{www,api}.nginx.local`:
 
 ```bash
 $ docker run -d --label ru.grachevko.dhu="{www,api}.nginx.local" nginx

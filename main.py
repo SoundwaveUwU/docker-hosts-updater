@@ -5,7 +5,7 @@ from netaddr import valid_ipv4
 
 LABEL = 'ru.grachevko.dhu'
 MARKER = '#### DOCKER HOSTS UPDATER ####'
-HOSTS_PATH = '/opt/hosts'
+HOSTS_PATH = os.getenv('HOSTS_PATH', '/opt/hosts')
 FALLBACK_CONTAINER_HOSTNAME = bool(os.getenv('FALLBACK_CONTAINER_HOSTNAME', True))
 FALLBACK_CONTAINER_NAME = bool(os.getenv('FALLBACK_CONTAINER_NAME', True))
 
@@ -43,7 +43,11 @@ def scan():
                         lb = docker.containers.get(lbString)
 
             if ip == False:
-                ip = next(iter(lb.attrs.get('NetworkSettings').get('Networks').values())).get('IPAddress')
+                try:
+                    ip = next(iter(lb.attrs.get('NetworkSettings').get('Networks').values())).get('IPAddress')
+                except:
+                    pass
+
 
             hosts = string_to_array(string)
             if FALLBACK_CONTAINER_HOSTNAME:
