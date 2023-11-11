@@ -6,8 +6,8 @@ from netaddr import valid_ipv4
 LABEL = 'ru.grachevko.dhu'
 MARKER = '#### DOCKER HOSTS UPDATER ####'
 HOSTS_PATH = '/opt/hosts'
-FALLBACK_CONTAINER_HOSTNAME = bool(os.getenv('FALLBACK_CONTAINER_HOSTNAME', False))
-FALLBACK_CONTAINER_NAME = bool(os.getenv('FALLBACK_CONTAINER_NAME', False))
+FALLBACK_CONTAINER_HOSTNAME = bool(os.getenv('FALLBACK_CONTAINER_HOSTNAME', True))
+FALLBACK_CONTAINER_NAME = bool(os.getenv('FALLBACK_CONTAINER_NAME', True))
 
 
 def listen():
@@ -22,7 +22,7 @@ def scan():
         label = container.attrs.get('Config').get('Labels').get(LABEL)
 
         if not label:
-            string = ''
+            label = ''
 
         for string in label.split(';'):
             priority = 0
