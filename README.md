@@ -1,6 +1,6 @@
 docker-hosts-updater
 ----------
-Automatic update `/etc/hosts` on start/stop containers by labels.
+Automatic update `/etc/hosts` on start/stop containers.
 
 Requirements
 -----
